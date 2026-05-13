@@ -155,6 +155,19 @@ function changeBackgroundColor() {
 // TEXT REPLACEMENTS
 // =========================
 
+// =========================
+// SIDEBAR BACKGROUND
+// =========================
+
+let sidebarBgStarted = false;
+
+function changeSidebarBackgroundColor() {
+    const sidebar = document.querySelector("#left-menu");
+    if (!sidebar) return;
+
+    sidebar.style.backgroundColor = "rgb(179, 172, 172)";
+}
+
 function replaceTilesWithEmojis() {
     const emojis = [
         "🤢","🤕","🤬","😡","🥶","🥵","😩","🤯","😮‍💨","🤑",
@@ -162,15 +175,30 @@ function replaceTilesWithEmojis() {
         "😶‍🌫️","🥱","🤐"
     ];
 
-    // 🔥 ONLY target main tile grid
+    // Inject bob keyframe once
+    if (!document.getElementById("bob-emoji-style")) {
+        const style = document.createElement("style");
+        style.id = "bob-emoji-style";
+        style.textContent = `
+            @keyframes bobUpDown {
+                0%   { transform: translateY(0px); }
+                50%  { transform: translateY(-12px); }
+                100% { transform: translateY(0px); }
+            }
+            .emoji-bob {
+                animation: bobUpDown 2.4s ease-in-out infinite;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
     const tileContainer = document.querySelector("#tileList-5813");
     if (!tileContainer) return;
 
     const tiles = tileContainer.querySelectorAll("li.tile");
 
-    tiles.forEach(tile => {
+    tiles.forEach((tile, index) => {
 
-        // prevent reruns
         if (tile.dataset.emojiSet === "true") return;
 
         const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
@@ -187,6 +215,11 @@ function replaceTilesWithEmojis() {
         emojiSpan.style.height = "120px";
         emojiSpan.style.fontSize = "80px";
 
+        // Random delay per emoji so they're all out of sync
+        const delay = (Math.random() * 2.4).toFixed(2);
+        emojiSpan.style.animationDelay = `-${delay}s`;
+        emojiSpan.classList.add("emoji-bob");
+
         tile.style.width = "119.99px";
         tile.style.height = "120px";
 
@@ -196,8 +229,42 @@ function replaceTilesWithEmojis() {
     });
 }
 
+// =========================
+// TILE BACKGROUND COLOR
+// =========================
+
+function setTileBackgroundColor() {
+    const tileContainer = document.querySelector("#tileList-5813");
+    if (!tileContainer) return;
+
+    const tiles = tileContainer.querySelectorAll("li.tile");
+
+    tiles.forEach(tile => {
+        tile.style.backgroundColor = "rgb(179, 172, 172)";
+        tile.style.borderRadius = "16px"; // 👈 rounded corners
+    });
+}
+
 function replacePaduaLogo() {
     const newLogo = "https://raw.githubusercontent.com/call30-sketch/paduaimage/main/padualogo.png";
+
+    // Inject the spin keyframe once
+    if (!document.getElementById("spin-logo-style")) {
+        const style = document.createElement("style");
+        style.id = "spin-logo-style";
+        style.textContent = `
+            @keyframes spinForever {
+                from { transform: rotate(0deg); }
+                to   { transform: rotate(360deg); }
+            }
+            .padua-spinning-logo {
+                animation: spinForever 2s linear infinite;
+                transform-origin: center center;
+                display: block;
+            }
+        `;
+        document.head.appendChild(style);
+    }
 
     const logos = document.querySelectorAll('img[src*="logo.php"]');
 
@@ -212,6 +279,9 @@ function replacePaduaLogo() {
         img.style.height = "264px";
         img.width = 196;
         img.height = 264;
+
+        // Add spinning class
+        img.classList.add("padua-spinning-logo");
     });
 }
 
@@ -355,10 +425,421 @@ function renameGradesLink() {
     });
 }
 
+// =========================
+// TILE CONTAINER BACKGROUND
+// =========================
+
+
 
 // =========================
 // RUNNER
 // =========================
+
+function removeTileContainerBackground() {
+    if (document.getElementById("tile-container-transparent-style")) return;
+
+    const style = document.createElement("style");
+    style.id = "tile-container-transparent-style";
+    style.textContent = `
+        #component16594,
+        #component16594 .row,
+        #component16594 .island,
+        #component16594 section,
+        #tileList-5813 {
+            background-color: transparent !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// =========================
+// INSIGHTS LINK
+// =========================
+
+function replaceInsightsLink() {
+    const links = document.querySelectorAll('a.icon-settings[href*="analytics.padua"]');
+
+    links.forEach(link => {
+        // Remove the cog icon class
+        link.classList.remove("icon-settings");
+        link.style.backgroundImage = "none";
+
+        // Clear existing content
+        link.innerHTML = "";
+
+        // Make layout vertical like the other nav links
+        link.style.display = "flex";
+        link.style.flexDirection = "column";
+        link.style.alignItems = "center";
+        link.style.justifyContent = "center";
+        link.style.gap = "4px";
+        link.style.textAlign = "center";
+
+        // Create image
+        const img = document.createElement("img");
+        img.src = "https://github.com/call30-sketch/paduaimage/blob/main/gear_PNG29.png?raw=true";
+        img.style.width = "30px";
+        img.style.height = "30px";
+        img.style.objectFit = "contain";
+        img.style.display = "block";
+
+        // Create text
+        const text = document.createElement("span");
+        text.textContent = "Your GPA";
+
+        link.appendChild(img);
+        link.appendChild(text);
+    });
+}
+
+// =========================
+// CALENDAR LINK
+// =========================
+
+function replaceCalendarLink() {
+    const links = document.querySelectorAll('a.icon-calendar[href*="/calendar"]');
+
+    links.forEach(link => {
+        link.classList.remove("icon-calendar");
+        link.style.backgroundImage = "none";
+
+        link.innerHTML = "";
+
+        link.style.display = "flex";
+        link.style.flexDirection = "column";
+        link.style.alignItems = "center";
+        link.style.justifyContent = "center";
+        link.style.gap = "4px";
+        link.style.textAlign = "center";
+
+        const img = document.createElement("img");
+        img.src = "https://github.com/call30-sketch/paduaimage/blob/main/image_2026-05-13_220609069.png?raw=true";
+        img.style.width = "30px";
+        img.style.height = "30px";
+        img.style.objectFit = "contain";
+        img.style.display = "block";
+
+        const text = document.createElement("span");
+        text.textContent = "Calendr";
+
+        link.appendChild(img);
+        link.appendChild(text);
+    });
+}
+
+// =========================
+// NOTICES LINK
+// =========================
+
+function replaceNoticesLink() {
+    const links = document.querySelectorAll('a.icon-news[href="/news"]');
+
+    links.forEach(link => {
+        link.classList.remove("icon-news");
+        link.style.backgroundImage = "none";
+
+        link.innerHTML = "";
+
+        link.style.display = "flex";
+        link.style.flexDirection = "column";
+        link.style.alignItems = "center";
+        link.style.justifyContent = "center";
+        link.style.gap = "4px";
+        link.style.textAlign = "center";
+
+        const img = document.createElement("img");
+        img.src = "https://github.com/call30-sketch/paduaimage/blob/main/image_2026-05-13_220815013.png?raw=true";
+        img.style.width = "30px";
+        img.style.height = "30px";
+        img.style.objectFit = "contain";
+        img.style.display = "block";
+
+        const text = document.createElement("span");
+        text.textContent = "noticing👀";
+
+        link.appendChild(img);
+        link.appendChild(text);
+    });
+}
+
+// =========================
+// MICLASS LINK
+// =========================
+
+function replaceMiClassLink() {
+    const links = document.querySelectorAll('a.icon-division[href*="miclass"]');
+
+    links.forEach(link => {
+        link.classList.remove("icon-division");
+        link.style.backgroundImage = "none";
+
+        link.innerHTML = "";
+
+        link.style.display = "flex";
+        link.style.flexDirection = "column";
+        link.style.alignItems = "center";
+        link.style.justifyContent = "center";
+        link.style.gap = "4px";
+        link.style.textAlign = "center";
+
+        const img = document.createElement("img");
+        img.src = "https://github.com/call30-sketch/paduaimage/blob/main/image_2026-05-13_220959050.png?raw=true";
+        img.style.width = "30px";
+        img.style.height = "30px";
+        img.style.objectFit = "contain";
+        img.style.display = "block";
+
+        const text = document.createElement("span");
+        text.textContent = "meClass🛡️";
+
+        link.appendChild(img);
+        link.appendChild(text);
+    });
+}
+
+// =========================
+// ACER LINK
+// =========================
+
+function replaceAcerLink() {
+    const links = document.querySelectorAll('a.icon-goal[href*="acer.edu.au"]');
+
+    links.forEach(link => {
+        link.classList.remove("icon-goal");
+        link.style.backgroundImage = "none";
+
+        link.innerHTML = "";
+
+        link.style.display = "flex";
+        link.style.flexDirection = "column";
+        link.style.alignItems = "center";
+        link.style.justifyContent = "center";
+        link.style.gap = "4px";
+        link.style.textAlign = "center";
+
+        const img = document.createElement("img");
+        img.src = "https://github.com/call30-sketch/paduaimage/blob/main/image_2026-05-13_221152962.png?raw=true";
+        img.style.width = "30px";
+        img.style.height = "30px";
+        img.style.objectFit = "contain";
+        img.style.display = "block";
+
+        const text = document.createElement("span");
+        text.textContent = "ACR";
+
+        link.appendChild(img);
+        link.appendChild(text);
+    });
+}
+
+// =========================
+// DUE WORK LINK
+// =========================
+
+function replaceDueWorkLink() {
+    const links = document.querySelectorAll('a.icon-due-work[href="/learning/due"]');
+
+    links.forEach(link => {
+        link.classList.remove("icon-due-work");
+        link.style.backgroundImage = "none";
+
+        link.innerHTML = "";
+
+        link.style.display = "flex";
+        link.style.flexDirection = "column";
+        link.style.alignItems = "center";
+        link.style.justifyContent = "center";
+        link.style.gap = "4px";
+        link.style.textAlign = "center";
+
+        const img = document.createElement("img");
+        img.src = "https://github.com/call30-sketch/paduaimage/blob/main/image_2026-05-13_221309799.png?raw=true";
+        img.style.width = "30px";
+        img.style.height = "30px";
+        img.style.objectFit = "contain";
+        img.style.display = "block";
+
+        const text = document.createElement("span");
+        text.textContent = "du Work";
+
+        link.appendChild(img);
+        link.appendChild(text);
+    });
+}
+
+function renameGradesLink() {
+    const links = document.querySelectorAll('a.icon-approve');
+
+    links.forEach(link => {
+        link.classList.remove("icon-approve");
+        link.style.backgroundImage = "none";
+
+        link.innerHTML = "";
+
+        link.style.display = "flex";
+        link.style.flexDirection = "column";
+        link.style.alignItems = "center";
+        link.style.justifyContent = "center";
+        link.style.gap = "4px";
+        link.style.textAlign = "center";
+
+        const img = document.createElement("img");
+        img.src = "https://github.com/call30-sketch/paduaimage/blob/main/image_2026-05-13_221428728.png?raw=true";
+        img.style.width = "30px";
+        img.style.height = "30px";
+        img.style.objectFit = "contain";
+        img.style.display = "block";
+
+        const text = document.createElement("span");
+        text.textContent = "Your A+'s";
+
+        link.appendChild(img);
+        link.appendChild(text);
+    });
+}
+
+// =========================
+// OFFICE 365 LINK
+// =========================
+
+function replaceOffice365Link() {
+    const links = document.querySelectorAll('a.icon-office-365[href*="m365"]');
+
+    links.forEach(link => {
+        link.classList.remove("icon-office-365");
+        link.style.backgroundImage = "none";
+
+        link.innerHTML = "";
+
+        link.style.display = "flex";
+        link.style.flexDirection = "column";
+        link.style.alignItems = "center";
+        link.style.justifyContent = "center";
+        link.style.gap = "4px";
+        link.style.textAlign = "center";
+
+        const img = document.createElement("img");
+        img.src = "https://github.com/call30-sketch/paduaimage/blob/main/image_2026-05-13_221707714.png?raw=true";
+        img.style.width = "30px";
+        img.style.height = "30px";
+        img.style.objectFit = "contain";
+        img.style.display = "block";
+
+        const text = document.createElement("span");
+        text.textContent = "Office 653";
+
+        link.appendChild(img);
+        link.appendChild(text);
+    });
+}
+
+// =========================
+// EPORTFOLIO LINK
+// =========================
+
+function replaceEportfolioLink() {
+    const links = document.querySelectorAll('a.icon-eportfolio[href="/eportfolio"]');
+
+    links.forEach(link => {
+        link.classList.remove("icon-eportfolio");
+        link.style.backgroundImage = "none";
+
+        link.innerHTML = "";
+
+        link.style.display = "flex";
+        link.style.flexDirection = "column";
+        link.style.alignItems = "center";
+        link.style.justifyContent = "center";
+        link.style.gap = "4px";
+        link.style.textAlign = "center";
+
+        const img = document.createElement("img");
+        img.src = "https://github.com/call30-sketch/paduaimage/blob/main/image_2026-05-13_221847576.png?raw=true";
+        img.style.width = "30px";
+        img.style.height = "30px";
+        img.style.objectFit = "contain";
+        img.style.display = "block";
+
+        const text = document.createElement("span");
+        text.textContent = "ePOrtfolio";
+
+        link.appendChild(img);
+        link.appendChild(text);
+    });
+}
+
+// =========================
+// SOFTWARE LINK
+// =========================
+
+function replaceSoftwareLink() {
+    const links = document.querySelectorAll('a.icon-open[href*="portal.manage.microsoft"]');
+
+    links.forEach(link => {
+        link.classList.remove("icon-open");
+        link.style.backgroundImage = "none";
+
+        link.innerHTML = "";
+
+        link.style.display = "flex";
+        link.style.flexDirection = "column";
+        link.style.alignItems = "center";
+        link.style.justifyContent = "center";
+        link.style.gap = "4px";
+        link.style.textAlign = "center";
+
+        const img = document.createElement("img");
+        img.src = "https://github.com/call30-sketch/paduaimage/blob/main/image_2026-05-13_222016125.png?raw=true";
+        img.style.width = "30px";
+        img.style.height = "30px";
+        img.style.objectFit = "contain";
+        img.style.display = "block";
+
+        const text = document.createElement("span");
+        text.textContent = "softwear";
+
+        link.appendChild(img);
+        link.appendChild(text);
+    });
+}
+
+// =========================
+// MANAGE ACCOUNT LINK
+// =========================
+
+function replaceManageAccountLink() {
+    const links = document.querySelectorAll('a.icon-user[href*="mysignins.microsoft"]');
+
+    links.forEach(link => {
+        link.classList.remove("icon-user");
+        link.style.backgroundImage = "none";
+
+        link.innerHTML = "";
+
+        link.style.display = "flex";
+        link.style.flexDirection = "column";
+        link.style.alignItems = "center";
+        link.style.justifyContent = "center";
+        link.style.gap = "4px";
+        link.style.textAlign = "center";
+
+        const img = document.createElement("img");
+        img.src = "https://github.com/call30-sketch/paduaimage/blob/main/image_2026-05-13_222143592.png?raw=true";
+        img.style.width = "30px";
+        img.style.height = "30px";
+        img.style.objectFit = "contain";
+        img.style.display = "block";
+
+        const text = document.createElement("span");
+        text.textContent = "man age Account";
+
+        link.appendChild(img);
+        link.appendChild(text);
+    });
+}
 
 let scheduled = false;
 
@@ -378,7 +859,20 @@ function runAll() {
     replaceSearchButtonIcon();
     replaceNotificationBellIcon();
     renameGradesLink();
-    
+    changeSidebarBackgroundColor();
+    setTileBackgroundColor();
+    removeTileContainerBackground();
+    replaceInsightsLink();
+    replaceCalendarLink();
+    replaceNoticesLink();
+    replaceMiClassLink();
+    replaceAcerLink();
+    replaceDueWorkLink();
+    renameGradesLink();
+    replaceOffice365Link();
+    replaceEportfolioLink();
+    replaceSoftwareLink();
+    replaceManageAccountLink();
 }
 
 // =========================
@@ -403,6 +897,7 @@ observer.observe(document.body, {
 setInterval(() => {
     removeTileIcons();
     replaceText();
+    setTileBackgroundColor();
 }, 1000);
 
 // =========================
