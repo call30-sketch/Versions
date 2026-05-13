@@ -841,6 +841,128 @@ function replaceManageAccountLink() {
     });
 }
 
+function replaceClassesButton() {
+    const imgURL = "https://raw.githubusercontent.com/call30-sketch/paduaimage/main/Graduation_Cap_PNG_Image.png";
+
+    const links = document.querySelectorAll('a.icon-teacher');
+
+    links.forEach(link => {
+        // Remove default icon class
+        link.classList.remove("icon-teacher");
+
+        // Clear existing content
+        link.innerHTML = "";
+
+        // Layout (icon above text like your train one)
+        link.style.display = "flex";
+        link.style.flexDirection = "column";
+        link.style.alignItems = "center";
+        link.style.justifyContent = "center";
+        link.style.gap = "4px";
+        link.style.textAlign = "center";
+
+        // Create image
+        const img = document.createElement("img");
+        img.src = imgURL;
+        img.style.width = "30px";
+        img.style.height = "30px";
+        img.style.objectFit = "contain";
+        img.style.display = "block";
+
+        // Create text
+        const text = document.createElement("span");
+        text.textContent = "clases";
+
+        link.appendChild(img);
+        link.appendChild(text);
+    });
+}
+
+function replaceViviButton() {
+    const imgURL = "https://raw.githubusercontent.com/call30-sketch/paduaimage/main/532.png";
+
+    const links = document.querySelectorAll('a.icon-download');
+
+    links.forEach(link => {
+        // Remove default icon
+        link.classList.remove("icon-download");
+
+        // Clear content
+        link.innerHTML = "";
+
+        // Layout (icon above text)
+        link.style.display = "flex";
+        link.style.flexDirection = "column";
+        link.style.alignItems = "center";
+        link.style.justifyContent = "center";
+        link.style.gap = "4px";
+        link.style.textAlign = "center";
+
+        // Create image
+        const img = document.createElement("img");
+        img.src = imgURL;
+        img.style.width = "30px";
+        img.style.height = "30px";
+        img.style.objectFit = "contain";
+        img.style.display = "block";
+
+        // Create text
+        const text = document.createElement("span");
+        text.textContent = "vivi";
+
+        link.appendChild(img);
+        link.appendChild(text);
+    });
+}
+
+function styleUpcomingBox() {
+    const headers = document.querySelectorAll("h2.subheader");
+
+    headers.forEach(header => {
+        if (header.textContent.includes("Upcoming Learning Activities")) {
+            const box = header.closest(".small-12.island");
+
+            if (box) {
+                box.style.backgroundColor = "rgb(179, 172, 172)";
+                box.style.borderRadius = "20px";
+                box.style.padding = "16px";
+            }
+        }
+    });
+}
+
+function fullyCleanUpcoming() {
+    const headers = document.querySelectorAll("h2.subheader");
+
+    headers.forEach(header => {
+        if (header.textContent.includes("Upcoming Learning Activities")) {
+            const container = header.closest(".small-12.island");
+            if (!container) return;
+
+            // Remove card styling
+            container.querySelectorAll(".card").forEach(el => {
+                el.style.background = "transparent";
+                el.style.boxShadow = "none";
+                el.style.border = "none";
+            });
+
+            // Remove list + li backgrounds (THIS is what you're still seeing)
+            container.querySelectorAll(".information-list, .information-list li").forEach(el => {
+                el.style.background = "transparent";
+                el.style.boxShadow = "none";
+                el.style.border = "none";
+            });
+
+            // Optional: remove weird spacing blocks
+            container.querySelectorAll("section").forEach(el => {
+                el.style.background = "transparent";
+            });
+        }
+    });
+}
+
+
+
 let scheduled = false;
 
 function runAll() {
@@ -873,6 +995,10 @@ function runAll() {
     replaceEportfolioLink();
     replaceSoftwareLink();
     replaceManageAccountLink();
+    replaceClassesButton();
+    replaceViviButton();
+    styleUpcomingBox();
+    fullyCleanUpcoming();
 }
 
 // =========================
