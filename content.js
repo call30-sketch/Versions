@@ -961,6 +961,164 @@ function fullyCleanUpcoming() {
     });
 }
 
+function styleTimetableContainerGrey() {
+    const containers = document.querySelectorAll('[data-timetable-container]');
+
+    containers.forEach(container => {
+        // Main wrapper
+        container.style.backgroundColor = "rgb(179, 172, 172)";
+        container.style.borderRadius = "20px";
+        container.style.padding = "16px";
+
+        // Remove “white card” feel
+        container.style.boxShadow = "none";
+        container.style.border = "none";
+
+        // Scroll area (the white strip holding timetable)
+        const scroll = container.querySelector(".scrollable");
+        if (scroll) {
+            scroll.style.backgroundColor = "transparent";
+            scroll.style.boxShadow = "none";
+            scroll.style.border = "none";
+        }
+
+        // Table itself
+        const table = container.querySelector("table.timetable");
+        if (table) {
+            table.style.backgroundColor = "transparent";
+            table.style.border = "none";
+        }
+
+        // Header strip (owner message row)
+        const header = container.querySelector("h2.subheader");
+        if (header) {
+            header.style.backgroundColor = "transparent";
+        }
+    });
+}
+
+function killTimetableWhiteLayers() {
+    const styleId = "kill-timetable-white-layers";
+    if (document.getElementById(styleId)) return;
+
+    const style = document.createElement("style");
+    style.id = styleId;
+
+    style.textContent = `
+        /* OUTER GRID / COLUMN WRAPPERS */
+        #component180270,
+        #component180270 .row,
+        #component180270 .columns,
+        #component180270 .small-12.columns {
+            background: rgb(179, 172, 172) !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        /* THE ACTUAL "WHITE CARD" LAYER */
+        #component180270 [data-timetable-container],
+        #component180270 .island,
+        #component180270 section {
+            background: rgb(179, 172, 172) !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        /* SCROLL WRAPPER (THIS is usually the white strip you're seeing) */
+        #component180270 .scrollable {
+            background: rgb(179, 172, 172) !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        /* TABLE + CELLS */
+        #component180270 table,
+        #component180270 th,
+        #component180270 td {
+            background: rgb(179, 172, 172) !important;
+            border: none !important;
+        }
+
+        /* HEADER BAR */
+        #component180270 h2.subheader {
+            background: transparent !important;
+        }
+
+        /* REMOVE ANY WHITE LEFTOVER SHADOW LAYERS */
+        #component180270 * {
+            box-shadow: none !important;
+        }
+    `;
+
+    document.head.appendChild(style);
+}
+
+function styleTimetableUltimate() {
+    const styleId = "timetable-ultimate-style";
+    if (document.getElementById(styleId)) return;
+
+    const style = document.createElement("style");
+    style.id = styleId;
+
+    style.textContent = `
+        /* OUTER CONTAINER */
+        #component180270,
+        #component180270 .small-12.columns,
+        #component180270 .row {
+            background: rgb(179, 172, 172) !important;
+            border-radius: 24px !important;
+            box-shadow: none !important;
+        }
+
+        /* MAIN TIMETABLE BOX */
+        #component180270 [data-timetable-container] {
+            background: rgb(179, 172, 172) !important;
+            border-radius: 24px !important;
+            padding: 16px !important;
+            box-shadow: none !important;
+        }
+
+        /* SCROLL AREA */
+        #component180270 .scrollable {
+            background: rgb(179, 172, 172) !important;
+            border-radius: 18px !important;
+            box-shadow: none !important;
+        }
+
+        /* TABLE + CELLS */
+        #component180270 table,
+        #component180270 th,
+        #component180270 td {
+            background: rgb(179, 172, 172) !important;
+            border: none !important;
+            color: black !important;
+        }
+
+        /* FORCE ALL TEXT BLACK */
+        #component180270,
+        #component180270 * {
+            color: black !important;
+        }
+
+        /* SUBJECT BOXES (the colored classes inside timetable) */
+        #component180270 .timetable-subject {
+            border-radius: 14px !important;
+            color: black !important;
+        }
+
+        /* HEADER */
+        #component180270 h2.subheader {
+            color: black !important;
+            background: transparent !important;
+        }
+
+        /* REMOVE SHADOW LAYERS */
+        #component180270 * {
+            box-shadow: none !important;
+        }
+    `;
+    document.head.appendChild(style);
+}
 
 
 let scheduled = false;
@@ -999,6 +1157,9 @@ function runAll() {
     replaceViviButton();
     styleUpcomingBox();
     fullyCleanUpcoming();
+    styleTimetableContainerGrey();
+    killTimetableWhiteLayers();
+    styleTimetableUltimate();
 }
 
 // =========================
