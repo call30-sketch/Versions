@@ -1120,6 +1120,33 @@ function styleTimetableUltimate() {
     document.head.appendChild(style);
 }
 
+function replaceFeedbackLinkWithImage() {
+    const imgURL = "https://github.com/call30-sketch/paduaimage/blob/main/images%20(1).jpg?raw=true";
+
+    const links = document.querySelectorAll('a[href="/feedback"]');
+
+    links.forEach(link => {
+        // clear text
+        link.textContent = "";
+
+        // create image
+        const img = document.createElement("img");
+        img.src = imgURL;
+
+        img.style.width = "150px";
+        img.style.height = "120px";
+        img.style.objectFit = "contain";
+        img.style.display = "block";
+
+        // optional: make it match your other nav buttons
+        link.style.display = "flex";
+        link.style.alignItems = "center";
+        link.style.justifyContent = "center";
+        link.style.gap = "4px";
+
+        link.appendChild(img);
+    });
+}
 
 let scheduled = false;
 
@@ -1160,6 +1187,7 @@ function runAll() {
     styleTimetableContainerGrey();
     killTimetableWhiteLayers();
     styleTimetableUltimate();
+    replaceFeedbackLinkWithImage()
 }
 
 // =========================
